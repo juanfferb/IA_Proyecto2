@@ -5,16 +5,16 @@ public class Main {
     public static void main(String[] args) {
         Resolucion kb = new Resolucion(); // Creamos una base de conocimiento
 
-        // Agregamos cláusulas (hechos y reglas)
-        kb.agregarClausula(new Clausula(Set.of(new Literal("Hombre", "Marco"))));
-        kb.agregarClausula(new Clausula(Set.of(new Literal("Pompeyano", "Marco"))));
-        kb.agregarClausula(new Clausula(Set.of(new Literal("Romano", "a"), new Literal("-Pompeyano", "a"))));
-        kb.agregarClausula(new Clausula(Set.of(new Literal("Gobernante", "Cesar"))));
-        kb.agregarClausula(new Clausula(Set.of(new Literal("Leal", "a", "Cesar"), new Literal("Odia", "a", "Cesar"), new Literal("-Romano", "a"))));
-        kb.agregarClausula(new Clausula(Set.of(new Literal("-Leal", "a", "b"), new Literal("-Hombre", "a"), new Literal("-IntentaAsesinar", "a", "b"), new Literal("-Gobernante", "b"))));
-        kb.agregarClausula(new Clausula(Set.of(new Literal("IntentaAsesinar", "Marco", "Cesar"))));
+        // Agregamos cláusulas (hechos y reglas) en el orden correcto usando LinkedHashSet
+        kb.agregarClausula(new Clausula(new LinkedHashSet<>(List.of(new Literal("Hombre", "Marco")))));
+        kb.agregarClausula(new Clausula(new LinkedHashSet<>(List.of(new Literal("Pompeyano", "Marco")))));
+        kb.agregarClausula(new Clausula(new LinkedHashSet<>(List.of(new Literal("-Pompeyano", "a"), new Literal("Romano", "a")))));
+        kb.agregarClausula(new Clausula(new LinkedHashSet<>(List.of(new Literal("Gobernante", "Cesar")))));
+        kb.agregarClausula(new Clausula(new LinkedHashSet<>(List.of(new Literal("-Romano", "a"), new Literal("Leal", "a", "Cesar"), new Literal("Odia", "a", "Cesar")))));
+        kb.agregarClausula(new Clausula(new LinkedHashSet<>(List.of(new Literal("-Hombre", "a"), new Literal("-Gobernante", "b"), new Literal("-IntentaAsesinar", "a", "b"), new Literal("-Leal", "a", "b")))));
+        kb.agregarClausula(new Clausula(new LinkedHashSet<>(List.of(new Literal("IntentaAsesinar", "Marco", "Cesar")))));
 
-                // Mostrar base de conocimiento actual
+        // Mostrar base de conocimiento actual
         System.out.println("Base de conocimiento inicial:");
         kb.mostrarClausulas();
 
@@ -33,10 +33,6 @@ public class Main {
         kb.mostrarClausulas();
 
         System.out.println("--------------------------");
-
-
-
-
 
         // Inicia el proceso de resolución
         System.out.println("\nResolviendo...\n");
