@@ -24,6 +24,7 @@ public class Main {
         // Hecho: Marco intenta asesinar a César
         kb.agregarClausula(new Clausula(new LinkedHashSet<>(List.of(new Literal("IntentaAsesinar", "Marco", "Cesar")))));
 
+<<<<<<< HEAD:java-version/Main.java
         // Mostrar base de conocimiento actual
         System.out.println("Base de conocimiento inicial:");
         kb.mostrarClausulas();
@@ -40,12 +41,35 @@ public class Main {
 
         // Mostrar la base de conocimiento después de la sustitución
         System.out.println("\nBase de conocimiento después de la sustitución:");
+=======
+        // Declaramos la conjetura a verificar
+        List<Literal> conjetura = List.of(new Literal("Odia", "a", "c"));
+        kb.negarConjetura(conjetura); // Se niega la conjetura
+
+        // Mostrar base de conocimiento inicial
+        System.out.println("Base de conocimiento inicial:");
+        System.out.println("--------------------------");
+>>>>>>> 204ecb7 (nueva version):Main_actualizado.java
         kb.mostrarClausulas();
 
+        // Sustitución de variables
+        Map<String, String> variables = kb.unificarVariables("Marco", "Cesar");
+        kb.sustituirVariables(variables);
+
+        // Mostrar después de sustitución
+        System.out.println("--------------------------");
+        System.out.println("Después de sustituir variables:");
+        kb.mostrarClausulas();
         System.out.println("--------------------------");
 
+<<<<<<< HEAD:java-version/Main.java
         // Inicia el proceso de resolución para verificar la conjetura
         System.out.println("\nResolviendo...\n");
+=======
+        // Inicia el proceso de resolución
+        System.out.println("Resolviendo...");
+        System.out.println();
+>>>>>>> 204ecb7 (nueva version):Main_actualizado.java
         kb.resolver();
     }
 }
