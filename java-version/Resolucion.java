@@ -5,12 +5,12 @@ public class Resolucion {
     private Set<Clausula> clausulas = new LinkedHashSet<>(); // Base de conocimiento
     public Clausula vacio = new Clausula(); // Clausula vacía
 
-    // Añade una cláusula a la base
+    // Añade una cláusula a la base de conocimiento
     public void agregarClausula(Clausula c) {
         clausulas.add(c);
     }
 
-    // Muestra las cláusulas actuales
+    // Muestra todas las cláusulas almacenadas en la base de conocimiento
     public void mostrarClausulas() {
         for (Clausula c : clausulas) {
             List<Literal> ordenados = new ArrayList<>(c.literales);
@@ -19,7 +19,7 @@ public class Resolucion {
         }
     }
     
-    // Nega una conjetura añadiendo sus literales negados como cláusulas
+    // Nega una conjetura agregando sus literales negados a la base de conocimiento
     public void negarConjetura(List<Literal> conjetura) {
         for (Literal l : conjetura) {
             Clausula negada = new Clausula();
@@ -28,7 +28,7 @@ public class Resolucion {
         }
     }
 
-    // Asocia letras con nombres reales (ej. a->Marco)
+    // Crea un mapeo entre variables simbólicas y nombres reales (ejemplo: a -> Marco)
     public Map<String, String> unificarVariables(String... args) {
         Map<String, String> mapa = new HashMap<>();
         String letras = "abcdefghijklmnopqrstuvwxyz";
@@ -38,33 +38,34 @@ public class Resolucion {
         return mapa;
     }
 
-    // Sustituye las variables por nombres reales en las cláusulas
+    // Sustituye variables simbólicas con valores reales en todas las cláusulas almacenadas
     public void sustituirVariables(Map<String, String> variables) {
         List<Clausula> nuevas = new ArrayList<>();
         for (Clausula c : clausulas) {
-            Set<Literal> nuevos = new LinkedHashSet<>(); // 🔥 Mantener orden
+            Set<Literal> nuevos = new LinkedHashSet<>(); // Mantiene el orden
             for (Literal l : c.literales) {
                 String[] nuevosArgs = Arrays.stream(l.argumentos)
                                             .map(arg -> variables.getOrDefault(arg, arg))
                                             .toArray(String[]::new);
                 nuevos.add(new Literal(l.predicado, nuevosArgs));
             }
-            nuevas.add(new Clausula(new LinkedHashSet<>(nuevos))); // 🛑 Asegurar LinkedHashSet al crear la nueva cláusula
+            nuevas.add(new Clausula(new LinkedHashSet<>(nuevos))); // Asegura LinkedHashSet
         }
-        clausulas = new LinkedHashSet<>(nuevas); // Asegurar que siga siendo un LinkedHashSet
+        clausulas = new LinkedHashSet<>(nuevas); // Mantiene el tipo LinkedHashSet
     }    
 
+    // Algoritmo de resolución por refutación
     public boolean resolver() {
-        Set<Clausula> clausulasAnalizadas = new LinkedHashSet<>(); // Mantener orden
+        Set<Clausula> clausulasAnalizadas = new LinkedHashSet<>(); // Mantiene el orden
     
         while (!clausulas.isEmpty()) {
-            List<Clausula> listaClausulas = new ArrayList<>(clausulas); // ✅ Convertir a List
-            Clausula ultima = listaClausulas.get(listaClausulas.size() - 1); // Última cláusula agregada
+            List<Clausula> listaClausulas = new ArrayList<>(clausulas); // Convierte a lista para acceder por índice
+            Clausula ultima = listaClausulas.get(listaClausulas.size() - 1); // Última cláusula añadida
             Clausula primera = ultima;
             Literal literalOpuesto = null;
             Clausula segunda = null;
     
-            // Buscar un literal opuesto en otra cláusula
+            // Busca un literal opuesto en otra cláusula
             for (Literal l : primera.literales) {
                 for (Clausula c : clausulas) {
                     if (c == primera || clausulasAnalizadas.contains(c)) continue;
@@ -80,6 +81,7 @@ public class Resolucion {
                 if (segunda != null) break;
             }
     
+            // Si no se encontró una cláusula opuesta, buscar combinaciones
             if (segunda == null) {
                 clausulasAnalizadas.add(primera);
                 boolean progreso = false;
@@ -109,20 +111,21 @@ public class Resolucion {
                 }
             }
     
-            // Generar la cláusula resolvente sin alterar el orden de los literales
+            // Genera la cláusula resolvente eliminando los literales opuestos
             Set<Literal> union = new LinkedHashSet<>(segunda.literales);
             union.addAll(primera.literales);
             union.remove(literalOpuesto);
             union.remove(literalOpuesto.negado());
-            Clausula resolvente = new Clausula(union);  // Mantener el orden original con LinkedHashSet
-
+            Clausula resolvente = new Clausula(union);  // Mantiene el orden original con LinkedHashSet
     
+            // Si la cláusula resolvente es vacía, se ha encontrado una contradicción
             if (resolvente.literales.isEmpty()) {
                 System.out.println("--------------------------");
                 System.out.println("Se ha derivado la cláusula vacía. Contradicción encontrada. La conjetura es verdadera");
                 return true;
             }
     
+            // Actualiza la base de conocimiento con la nueva cláusula resolvente
             clausulas.remove(primera);
             clausulas.remove(segunda);
             clausulas.add(resolvente);

@@ -8,10 +8,20 @@ public class Main {
         // Agregamos cláusulas (hechos y reglas) en el orden correcto usando LinkedHashSet
         kb.agregarClausula(new Clausula(new LinkedHashSet<>(List.of(new Literal("Hombre", "Marco")))));
         kb.agregarClausula(new Clausula(new LinkedHashSet<>(List.of(new Literal("Pompeyano", "Marco")))));
+        
+        // Regla: Si alguien es Pompeyano, entonces es Romano
         kb.agregarClausula(new Clausula(new LinkedHashSet<>(List.of(new Literal("-Pompeyano", "a"), new Literal("Romano", "a")))));
+        
+        // Hecho: César es un gobernante
         kb.agregarClausula(new Clausula(new LinkedHashSet<>(List.of(new Literal("Gobernante", "Cesar")))));
+        
+        // Regla: Si alguien es Romano, entonces debe ser Leal a César o debe Odiar a César
         kb.agregarClausula(new Clausula(new LinkedHashSet<>(List.of(new Literal("-Romano", "a"), new Literal("Leal", "a", "Cesar"), new Literal("Odia", "a", "Cesar")))));
+        
+        // Regla: Un Hombre que no sea un Gobernante y que intente asesinar a alguien no es Leal a esa persona
         kb.agregarClausula(new Clausula(new LinkedHashSet<>(List.of(new Literal("-Hombre", "a"), new Literal("-Gobernante", "b"), new Literal("-IntentaAsesinar", "a", "b"), new Literal("-Leal", "a", "b")))));
+        
+        // Hecho: Marco intenta asesinar a César
         kb.agregarClausula(new Clausula(new LinkedHashSet<>(List.of(new Literal("IntentaAsesinar", "Marco", "Cesar")))));
 
         // Mostrar base de conocimiento actual
@@ -20,11 +30,11 @@ public class Main {
 
         System.out.println("--------------------------");
 
-        // Declaramos la conjetura a verificar
+        // Declaramos la conjetura a verificar: "Marco odia a César"
         List<Literal> conjetura = List.of(new Literal("Odia", "Marco", "Cesar"));
-        kb.negarConjetura(conjetura); // Se niega la conjetura
+        kb.negarConjetura(conjetura); // Se niega la conjetura para intentar demostrarla por contradicción
 
-        // Se sustituyen las variables por nombres reales
+        // Se sustituyen las variables por nombres reales en la base de conocimiento
         Map<String, String> variables = kb.unificarVariables("Marco", "Cesar");
         kb.sustituirVariables(variables);
 
@@ -34,7 +44,7 @@ public class Main {
 
         System.out.println("--------------------------");
 
-        // Inicia el proceso de resolución
+        // Inicia el proceso de resolución para verificar la conjetura
         System.out.println("\nResolviendo...\n");
         kb.resolver();
     }

@@ -1,5 +1,3 @@
-
-// Clausula.java
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -7,50 +5,69 @@ import java.util.stream.Collectors;
 
 // Representa una cláusula lógica como una disyunción de literales (OR)
 public class Clausula {
-    public Set<Literal> literales;
+    public Set<Literal> literales; // Conjunto de literales en la cláusula
 
-    // Constructor vacío
+    // Constructor vacío: inicializa una cláusula sin literales
     public Clausula() {
         this.literales = new HashSet<>();
     }
 
-    // Constructor con conjunto de literales
+    // Constructor que recibe un conjunto de literales y crea una cláusula con ellos
     public Clausula(Set<Literal> literales) {
-        this.literales = new HashSet<>(literales);
+        this.literales = new HashSet<>(literales); // Copia los literales para evitar modificaciones externas
     }
 
-    // Une dos cláusulas (OR)
+    /**
+     * Método para unir dos cláusulas en una nueva.
+     * Combina los literales de ambas cláusulas en un solo conjunto.
+     * Esto representa la operación de disyunción lógica (OR) entre los literales.
+     */
     public Clausula unir(Clausula otra) {
-        Set<Literal> nueva = new HashSet<>(this.literales);
-        nueva.addAll(otra.literales);
-        return new Clausula(nueva);
+        Set<Literal> nueva = new HashSet<>(this.literales); // Copia los literales actuales
+        nueva.addAll(otra.literales); // Agrega los literales de la otra cláusula
+        return new Clausula(nueva); // Retorna una nueva cláusula con el resultado
     }
 
-    // Resta literales de otra cláusula
+    /**
+     * Método para restar los literales de otra cláusula.
+     * Quita los literales de la cláusula actual que estén en la cláusula proporcionada.
+     * 
+     */
     public Clausula restar(Clausula otra) {
-        Set<Literal> nueva = new HashSet<>(this.literales);
-        nueva.removeAll(otra.literales);
-        return new Clausula(nueva);
+        Set<Literal> nueva = new HashSet<>(this.literales); // Copia los literales actuales
+        nueva.removeAll(otra.literales); // Elimina los literales que también están en la otra cláusula
+        return new Clausula(nueva); // Retorna una nueva cláusula con el resultado
     }
 
-    // Igualdad entre cláusulas
+    /**
+     * Método equals para comparar si dos cláusulas son iguales.
+     * Dos cláusulas son iguales si tienen exactamente los mismos literales.
+     * 
+     */
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) return true; // Si es la misma instancia, son iguales
+        if (o == null || getClass() != o.getClass()) return false; // Verifica el tipo
         Clausula clausula = (Clausula) o;
-        return Objects.equals(literales, clausula.literales);
+        return Objects.equals(literales, clausula.literales); // Compara los conjuntos de literales
     }
 
-    // Hash para sets/mapas
+    /**
+     * Método hashCode para permitir el uso de cláusulas en estructuras de datos como HashSet o HashMap.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(literales);
     }
 
-    // Representación textual
+    /**
+     * Representación en texto de la cláusula.
+     * Devuelve una cadena donde los literales están unidos por " OR ".
+     */
     @Override
     public String toString() {
-        return literales.stream().map(Object::toString).collect(Collectors.joining(" OR "));
+        return literales.stream()
+                .map(Object::toString) // Convierte cada literal en su representación de cadena
+                .collect(Collectors.joining(" OR ")); // Une los literales con " OR "
     }
 }
